@@ -1,0 +1,44 @@
+
+{
+    "debug": true,
+    "accumulate_step": 16,
+    "batch_size": 2,
+    "eval_batch_size": 4,
+    
+    "bert_cache_dir": "./bert",
+    "bert_dropout": 0.0,
+    "bert_learning_rate": 5e-05,
+    "bert_model_name": "facebook/bart-base",
+    "bert_weight_decay": 1e-05,
+    
+    
+    "decoding_method": "beam_search",
+    "train_file": "data/muc34/proc_output/ree_train.json",
+    "dev_file": "data/muc34/proc_output/ree_dev.json",
+    "test_file": "data/muc34/proc_output/ree_test.json",
+    
+    
+    "SOT_weights":5,
+    "permute_slots":false,
+    "max_position_embeddings":1024,
+    "grad_clipping": 5.0,
+    "task":"ree",
+    "grit_dev_file":"data/muc34/proc_output/grit_dev.json",
+    "grit_test_file":"data/muc34/proc_output/grit_test.json",
+    "log_path": "./log/ree_bart_gen",
+    "k":10,
+    "max_epoch": 150,
+    "max_length": 512,
+    
+    "num_beams":4,
+    
+    "output_path": "./output/ree_bart_gen",
+    "use_copy":true,
+    "use_SAGCopy":false,
+    
+    "use_extra_bert": true,
+    "use_gpu": true,
+    "gpu_device": 0,
+    "warmup_epoch": 5,
+    "weight_decay": 0.001
+}

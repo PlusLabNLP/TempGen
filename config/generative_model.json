@@ -1,0 +1,45 @@
+
+{
+    "debug": true,
+    "accumulate_step": 8,
+    "batch_size": 2,
+    "eval_batch_size": 2,
+    
+    "bert_cache_dir": "./bert",
+    "bert_dropout": 0.0,
+    "bert_learning_rate": 1e-05,
+    "bert_model_name": "facebook/bart-base",
+    "bert_weight_decay": 1e-05,
+    
+    
+    "decoding_method": "greedy",
+    "train_file": "data/muc34/proc_output/train.json",
+    "dev_file": "data/muc34/proc_output/dev.json",
+    "test_file": "data/muc34/proc_output/test.json",
+    "early_stop_patient": 15,
+    "early_stop_use": false,
+    
+    
+    "SOT_weights":5,
+    "permute_slots":true,
+    "max_position_embeddings":1024,
+    "grad_clipping": 5.0,
+    "task":"ete",
+    
+    
+    "log_path": "./log/bart_gen",
+    
+    "max_epoch": 100,
+    "max_length": 512,
+    
+    "num_beams":4,
+    
+    "output_path": "./output/bart_gen",
+    
+    
+    "use_extra_bert": true,
+    "use_gpu": true,
+    "gpu_device": 2,
+    "warmup_epoch": 5,
+    "weight_decay": 0.001
+}

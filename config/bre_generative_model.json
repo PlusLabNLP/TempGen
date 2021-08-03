@@ -1,0 +1,44 @@
+
+{
+    "debug": true,
+    "accumulate_step": 32,
+    "batch_size": 1,
+    "eval_batch_size": 4,
+    
+    "bert_cache_dir": "./bert",
+    "bert_dropout": 0.0,
+    "bert_learning_rate": 5e-05,
+    "bert_model_name": "facebook/bart-base",
+    "bert_weight_decay": 1e-05,
+    
+    
+    "decoding_method": "beam_search",
+    "train_file": "data/scirex/proc_output/train.json",
+    "dev_file": "data/scirex/proc_output/dev.json",
+    "test_file": "data/scirex/proc_output/test.json",
+    
+    
+    "SOT_weights":25, 
+    "permute_slots":false,
+    "max_position_embeddings":512,
+    "grad_clipping": 5.0,
+    "task":"bre",
+    "scirex_dev_file":"data/scirex/release_data/dev.jsonl",
+    "scirex_test_file":"data/scirex/release_data/test.jsonl",
+    "log_path": "./log/bre_bart_gen",
+    "k":10,
+    "max_epoch": 150,
+    "max_length": 1024,
+    
+    "num_beams":4,
+    
+    "output_path": "./output/bre_bart_gen",
+    
+    "use_copy":true,
+    "use_SAGCopy":false,
+    "use_extra_bert": true,
+    "use_gpu": true,
+    "gpu_device": 3,
+    "warmup_epoch": 5,
+    "weight_decay": 0.001
+}
