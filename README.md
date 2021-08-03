@@ -2,6 +2,7 @@
 <div align="center">
 <a href="https://pluslabnlp.github.io/"><img src="https://pluslabnlp.github.io/images/Logos/logo_transparent_background.png" height="120" ></a>
 </div>
+
 ## Dependencies 
 
 All the required packages are listed in `requirements.txt`. To install all the dependencies, run
