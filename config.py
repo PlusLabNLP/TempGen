@@ -2,7 +2,6 @@ import copy
 import json
 import os
 from constants import *
-from typing import Dict, Any
 
 from transformers import AutoConfig
 

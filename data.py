@@ -47,42 +47,11 @@ class IEDataset(Dataset):
             
             self.data = json.loads(r.read())
 
-    # def create_decoder_input_sequence_bre(self, annotation, tokenizer):
-    #     '''
-    #     An annotation is a list of json
-    #     [{'Material': 'Quora_Question_Pairs', 'Metric': 'Accuracy'},
-    #     {'Material': 'Quora_Question_Pairs', 'Task': 'Natural_Language_Inference'},
-    #     {'Material': 'MultiNLI', 'Task': 'Natural_Language_Inference'},
-    #     {'Material': 'SNLI', 'Task': 'Natural_Language_Inference'},
-    #     {'Material': 'Quora_Question_Pairs', 'Method': 'aESIM'},
-    #     {'Material': 'SNLI', 'Method': 'aESIM'},
-    #     {'Material': 'MultiNLI', 'Method': 'aESIM'},
-    #     {'Metric': 'Accuracy', 'Task': 'Natural_Language_Inference'},
-    #     {'Metric': 'Accuracy', 'Method': 'aESIM'},
-    #     {'Task': 'Natural_Language_Inference', 'Method': 'aESIM'}]
-        
-        
-
-
-    #     e.g. [{'Material': 'Quora_Question_Pairs', 'Metric': 'Accuracy'} -> <SOT><SOSN>Material<EOSN><SOE>Quora_Question_Pairs<EOE><SOSN>Metric<EOSN><SOE>Accuracy<EOE><EOT>
-    #     '''
-    #     res = []
-    #     # instead of taking the entity "name", take every mention that corresponds to the name
-    #     for relation_dict in annotation:
-    #         current_relation = [START_OF_TEMPLATE]
-    #         for entity_type, entity in relation_dict.items():
-    #             current_relation += [START_OF_SLOT_NAME, entity_type, END_OF_SLOT_NAME, START_OF_ENTITY, entity, END_OF_ENTITY]
-    #         current_relation += [END_OF_TEMPLATE]
-    #         for token in current_relation:
-    #             res += token2sub_tokens(tokenizer, token)
-    #     return res
-
-
 
     def create_decoder_input_chunks(self, templates, tokenizer):
         
         '''
-        templates is a list of json
+        `templates` is a list of dict.
          [
             {
                 MESSAGE-TEMPLATE': '1',
@@ -106,21 +75,8 @@ class IEDataset(Dataset):
             current_template_chunk = []
             for entity_key, entity_values in template.items():
                 
-                # we don't need to worry about this 
-                if entity_key == 'MESSAGE-TEMPLATE': continue
 
-                
-                # if it is a string value
-                if isinstance(entity_values, str):
-                    entity = []
-                    entity_tokens = [START_OF_SLOT_NAME, entity_key, END_OF_SLOT_NAME, START_OF_ENTITY, entity_values, END_OF_ENTITY]
-                    # entity_tokens = [entity_key, entity_values]
-                    for entity_token in entity_tokens:
-                        entity += token2sub_tokens(tokenizer, entity_token)
-                    
-                    current_template_chunk.append(entity)
-
-                elif isinstance(entity_values, list):
+                if isinstance(entity_values, list):
                     for entity_value in entity_values:
                         
                         # Add " " so that the token will be the same subtoken as the input document
@@ -139,15 +95,9 @@ class IEDataset(Dataset):
                         current_template_chunk.append(entity)
                 else:
                     raise NotImplementedError
-            #  start & end of template tokens will be added later in util.py
-
-            # current_template_chunk = token2sub_tokens(tokenizer, START_OF_TEMPLATE) + current_template_chunk + token2sub_tokens(tokenizer, END_OF_TEMPLATE)
             
-            # current_template_chunk = current_template_chunk 
             res.append(current_template_chunk)
-        # print(tokenizer.decode(res))
-        # do this in util.py
-        # res.append(tokenizer.sep_token_id)
+        
         
         return res
 
@@ -168,15 +118,13 @@ class IEDataset(Dataset):
             
             input_ids = tokenizer([document], max_length=self.max_length, truncation=True)['input_ids'][0]
 
-            # TODO: decide padding number in collate_fn to reduce memory consumption
             pad_num = self.max_length - len(input_ids)
             attn_mask = [1] * len(input_ids) + [0] * pad_num    
             input_ids = input_ids + [tokenizer.pad_token_id] * pad_num
 
-            # if task == ROLE_FILLER_ENTITY_EXTRACTION:
+            
             decoder_input_chunks = self.create_decoder_input_chunks(annotation, tokenizer)
-            # elif task == BINARY_RELATION_EXTRACTION:
-                # decoder_input_chunks = self.create_decoder_input_sequence_bre(annotation, tokenizer)
+            
             
             assert len(input_ids) == self.max_length, len(input_ids)
             
@@ -202,7 +150,6 @@ class IEDataset(Dataset):
 
         doc_ids = [inst.doc_id for inst in batch]
         
-
         for inst in batch:
             batch_input_ids.append(inst.input_ids)
             batch_attention_masks.append(inst.attention_mask)
@@ -218,8 +165,6 @@ class IEDataset(Dataset):
             batch_input_ids = torch.LongTensor(batch_input_ids)
             batch_attention_masks = torch.FloatTensor(batch_attention_masks)
         
-        
-        # print(batch_input_tokens)
         return Batch(
             doc_ids=doc_ids,
             input_ids=batch_input_ids,

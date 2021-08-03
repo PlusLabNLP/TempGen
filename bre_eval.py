@@ -1,9 +1,8 @@
 '''
 Copied over from https://github.com/allenai/SciREX/blob/master/scirex/evaluation_scripts/scirex_relation_evaluate.py
 '''
-from typing import Dict, Tuple, List
+from typing import Dict, List
 import os
-from collections import namedtuple
 from itertools import combinations
 import pandas as pd
 from copy import deepcopy

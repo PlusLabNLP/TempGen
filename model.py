@@ -1,14 +1,9 @@
 
 import torch
 import torch.nn as nn
-import numpy as np
-from transformers import AutoModelForSeq2SeqLM, AutoModel, BartForConditionalGeneration, EncoderDecoderModel, RobertaConfig, EncoderDecoderConfig, AutoModelForCausalLM
+from transformers import AutoModelForSeq2SeqLM
 from transformers import BeamSearchScorer, LogitsProcessorList
-from logits_processor import MaskNonInputLogitsProcessor
-from collections import Counter
-import copy
-from torch.nn.modules import TransformerDecoderLayer, TransformerDecoder, LayerNorm
-from tqdm import tqdm
+
 from copy_bart import CopyBartForConditionalGeneration
 from sagcopy import SAGCopyBartForConditionalGeneration
 from constants import *
@@ -49,11 +44,11 @@ class GenerativeModel(nn.Module):
         # self.decoder_criteria = torch.nn.CrossEntropyLoss()
     
     def load_bert(self, name, cache_dir=None, tokenizer=None):
-        """Load the pre-trained BERT model (used in training phrase)
-        :param name (str): pre-trained BERT model name
-        :param cache_dir (str): path to the BERT cache directory
+        """Load the pre-trained LM (used in training phrase)
+        :param name (str): pre-trained LM name
+        :param cache_dir (str): path to the LM cache directory
         """
-        print('Loading pre-trained BERT model {}'.format(name))
+        print('Loading pre-trained LM {}'.format(name))
         
 
         if self.use_copy:
@@ -61,40 +56,9 @@ class GenerativeModel(nn.Module):
             self.bert._k = self._k
         elif self.use_SAGCopy:
             self.bert = SAGCopyBartForConditionalGeneration.from_pretrained(name, cache_dir=cache_dir, output_attentions=True, output_hidden_states=True)
-        elif name.startswith('roberta'):
-            encoder = AutoModel.from_pretrained(name, cache_dir=cache_dir, output_hidden_states=True)
-            decoder = AutoModelForCausalLM.from_pretrained(name, cache_dir=cache_dir, output_hidden_states=True, is_decoder=True, add_cross_attention=True)
-            encoder.resize_token_embeddings(len(tokenizer))
-            decoder.resize_token_embeddings(len(tokenizer))
-            
-            
-            
-            self.bert = EncoderDecoderModel(encoder=encoder, decoder=decoder)
-            self.bert.config.tie_encoder_decoder=True
-            self.bert.tie_weights()
-            self.bert.config.decoder_start_token_id = tokenizer.eos_token_id
-            
         else:
             self.bert = AutoModelForSeq2SeqLM.from_pretrained(name, cache_dir=cache_dir) 
-            # if self.max_length > 1024:
-            #     # https://github.com/pytorch/fairseq/issues/1685#issuecomment-621520129
-            #     # adapted from https://github.com/huggingface/transformers/issues/4277#issuecomment-629452698
-            #     sd = self.bert.state_dict()
-            #     shorter_pos_embeds = sd['model.encoder.embed_positions.weight']
-            #     new_config = self.bert.config
-            #     new_config.max_position_embeddings = self.max_length
-            #     new_model = BartForConditionalGeneration(new_config)
-            #     correctly_shaped_pos_weight = new_model.model.encoder.embed_positions.weight.cuda()
-            #     correctly_shaped_pos_weight[:shorter_pos_embeds.shape[0]] = shorter_pos_embeds.cuda()
-            #     # starting from 2 because BART reserve 2 speical tokens for <s> and </s> it seems
-            #     correctly_shaped_pos_weight[shorter_pos_embeds.shape[0]:] = shorter_pos_embeds[2:self.max_length - shorter_pos_embeds.shape[0] + 4].cuda()
-            #     sd['model.decoder.embed_positions.weight'] = correctly_shaped_pos_weight
-            #     sd['model.encoder.embed_positions.weight'] = correctly_shaped_pos_weight
-            #     new_model.load_state_dict(sd, strict=True)
-            #     self.bert = new_model
                 
-
-
         
     def forward(self, batch, decoder_input_ids=None, decoder_labels=None, decoder_masks=None, logger=None, tag=None, step=None, tokenizer=None):
         
@@ -152,17 +116,8 @@ class GenerativeModel(nn.Module):
             num_beams=num_beams,
             device=self.bert.device,
         )
-        
-        
 
-        logits_processor = LogitsProcessorList([
-        #    MaskNonInputLogitsProcessor(decoder_token_masks),
-        ])
-
-        # logits_warper = LogitsProcessorList([
-        #     TopKLogitsWarper(50),
-            # TemperatureLogitsWarper(0.7),
-        # ])
+        logits_processor = LogitsProcessorList([])
         
         # seems that this is required if our model is a encoder-decoder architecture.
         model_kwargs = {

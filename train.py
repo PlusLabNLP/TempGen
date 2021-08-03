@@ -15,7 +15,6 @@ from config import Config
 from data import IEDataset
 from constants import *
 from util import *
-import copy
 import ree_eval
 import scirex_eval
 

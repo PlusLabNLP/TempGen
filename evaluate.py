@@ -1,6 +1,5 @@
 import os
 import json
-import time
 import random
 from argparse import ArgumentParser
 
@@ -8,14 +7,13 @@ import numpy as np
 import tqdm
 import torch
 from torch.utils.data import DataLoader
-from transformers import AutoTokenizer, AdamW, get_linear_schedule_with_warmup, Adafactor
+from transformers import AutoTokenizer
                           
 from model import GenerativeModel
 from config import Config
 from data import IEDataset
 from constants import *
 from util import *
-import copy
 import ree_eval
 import scirex_eval
 
@@ -73,8 +71,7 @@ elif config.task in {BINARY_RELATION_EXTRACTION, FOUR_ARY_RELATION_EXTRACTION}:
     scirex_dev = read_scirex_gold_file(config.scirex_dev_file)
     scirex_test = read_scirex_gold_file(config.scirex_test_file)
 
-# batch_num = len(train_set) // (config.batch_size * config.accumulate_step) + \
-#     (len(train_set) % (config.batch_size * config.accumulate_step) != 0)
+
 dev_batch_num = len(dev_set) // config.eval_batch_size + \
     (len(dev_set) % config.eval_batch_size != 0)
 test_batch_num = len(test_set) // config.eval_batch_size + \

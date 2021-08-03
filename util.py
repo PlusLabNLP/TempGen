@@ -1,25 +1,14 @@
 import torch
-import numpy as np
 import random 
 from collections import OrderedDict
 import json
 from tabulate import tabulate
 from typing import Dict, List, Tuple
-from constants import *
-
 import re
 
+from constants import *
 
 
-class Logger(object):
-    def __init__(self, logdir='./log'):
-        self.writer = SummaryWriter(logdir)
-
-    def scalar_summary(self, tag, value, step):
-        self.writer.add_scalar(tag, value, step)
-
-    def text_summary(self, tag, value, step):
-        self.writer.add_text(tag, value, step)
 
 
 def token2sub_tokens(tokenizer, token):
@@ -33,14 +22,6 @@ def token2sub_tokens(tokenizer, token):
         if len(sub_token) > 0: 
             res.append(tokenizer.convert_tokens_to_ids(sub_token))
     return res
-# def generate_decoder_inputs_outputs(batch, tokenizer, model, use_gpu, max_position_embeddings, permute_slots=False, task=None):
-
-#     if task == ROLE_FILLER_ENTITY_EXTRACTION:
-#         return generate_decoder_inputs_outputs_ree(batch, tokenizer, model, use_gpu, max_position_embeddings, permute_slots)
-#     elif task == BINARY_RELATION_EXTRACTION:
-#         return generate_decoder_inputs_outputs_bre(batch, tokenizer, model, use_gpu, max_position_embeddings, permute_slots)
-#     else:
-#         raise NotImplementedError
 
 def format_inputs_outputs(flattened_seqs, tokenizer, use_gpu, max_position_embeddings):
     
@@ -77,8 +58,6 @@ def format_inputs_outputs(flattened_seqs, tokenizer, use_gpu, max_position_embed
         decoder_input_ids.append(input_ids)
         decoder_labels.append(labels)
         decoder_masks.append(mask)
-    
-    
     
     # form tensor
     if use_gpu:
@@ -128,7 +107,7 @@ def generate_decoder_inputs_outputs(batch, tokenizer, model, use_gpu, max_positi
             if task in {BINARY_RELATION_EXTRACTION, FOUR_ARY_RELATION_EXTRACTION}:
                 # assuming each entity has different first meniton, we use this to construct a map that determines
                 # which mention to sample
-                # TODO: ensure that the selected mention appear in the input document (not cut off)
+                
                 first_mention2mention_idx :Dict[Tuple, int] = {}
                 for entity in template:
                     first_mention2mention_idx[tuple(entity[0])] = random.randint(0, len(entity)-1) # randint includes the boundaries on both side.
@@ -161,8 +140,7 @@ def generate_decoder_inputs_outputs(batch, tokenizer, model, use_gpu, max_positi
             print("model name ", model.bert.config)
             raise NotImplementedError
         
-        
-        # flattened_seq = flattened_seq
+
         flattened_seqs.append(flattened_seq)
 
 
@@ -286,8 +264,7 @@ def event_templates_to_ceaf(event_template_sequence: str, input_document: str):
     prev_tag = None # this is for determining whether a mention is in the same entity cluster as the previous mention
     try:
         while event_template_sequence:
-            # print(event_template_sequence)
-            # print(res)
+            
             # if encountered these, skip
             if event_template_sequence.startswith(START_OF_TEMPLATE):
                 event_template_sequence = event_template_sequence[len(START_OF_TEMPLATE):]
@@ -346,7 +323,6 @@ def event_templates_to_ceaf(event_template_sequence: str, input_document: str):
                 
                 prev_tag = ENTITY_TAG
 
-
             else:
                 # if nothing match, reduce the sequence length by 1 and move forward
                 event_template_sequence = event_template_sequence[1:]
@@ -357,13 +333,6 @@ def event_templates_to_ceaf(event_template_sequence: str, input_document: str):
 
     return res
 
-
-def beam_search():
-    """
-    Adapted from https://github.com/huggingface/transformers/blob/master/src/transformers/generation_utils.py#L985
-    """
-    
-    pass
 
 def read_grit_gold_file(file: str):
     golds = OrderedDict()
@@ -427,8 +396,7 @@ def get_best_score(log_file: str, role: str):
 def get_best_score_bre(log_file: str):
 
      with open(log_file, 'r', encoding='utf-8') as r:
-        config = r.readline()
-
+    
         best_scores = []
         best_dev_score = 0
         for line in r:
