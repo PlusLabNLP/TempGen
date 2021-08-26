@@ -75,6 +75,6 @@ python evaluate.py --gpu 0 --checkpoint $PATH_TO_MODEL/best.mdl
 ```
 passing `--gpu -1` can run evaluation on CPUs.
 
-The trained models are included in `trained_models` for reproduction purposes.
+The trained models can be downloaded from [here](https://drive.google.com/drive/folders/1D6-0mM7n3JeqXzspBtNWi6fQC4mJHdSb?usp=sharing) for reproduction purposes.
 
 The structure of this repo is based on OneIE (https://blender.cs.illinois.edu/software/oneie/)
