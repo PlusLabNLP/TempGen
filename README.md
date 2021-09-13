@@ -1,3 +1,6 @@
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/document-level-entity-based-extraction-as/role-filler-entity-extraction-on-muc-4)](https://paperswithcode.com/sota/role-filler-entity-extraction-on-muc-4?p=document-level-entity-based-extraction-as) </br>
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/document-level-entity-based-extraction-as/binary-relation-extraction-on-scirex)](https://paperswithcode.com/sota/binary-relation-extraction-on-scirex?p=document-level-entity-based-extraction-as) </br>
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/document-level-entity-based-extraction-as/4-ary-relation-extraction-on-scirex)](https://paperswithcode.com/sota/4-ary-relation-extraction-on-scirex?p=document-level-entity-based-extraction-as)</br>
 # Document-level Entity-based Extraction as Template Generation
 <div align="center">
 <a href="https://pluslabnlp.github.io/"><img src="https://pluslabnlp.github.io/images/Logos/logo_transparent_background.png" height="120" ></a>
