@@ -81,3 +81,17 @@ passing `--gpu -1` can run evaluation on CPUs.
 The trained models can be downloaded from [here](https://drive.google.com/drive/folders/1D6-0mM7n3JeqXzspBtNWi6fQC4mJHdSb?usp=sharing) for reproduction purposes.
 
 The structure of this repo is based on OneIE (https://blender.cs.illinois.edu/software/oneie/)
+
+## Citation
+```bibtex
+@inproceedings{huang-etal-2021-tempgen,
+    title = "Huang, Kung-Hsiang and Tang, Sam and Peng, Nanyun",
+    author = "Huang, Kung-Hsiang  and
+      Tang, Sam  and
+      Peng, Nanyun",
+    booktitle = "The 2021 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+}
+```
