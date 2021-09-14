@@ -85,7 +85,7 @@ The structure of this repo is based on OneIE (https://blender.cs.illinois.edu/so
 ## Citation
 ```bibtex
 @inproceedings{huang-etal-2021-tempgen,
-    title = "Huang, Kung-Hsiang and Tang, Sam and Peng, Nanyun",
+    title = "Document-level Entity-based Extraction as Template Generation",
     author = "Huang, Kung-Hsiang  and
       Tang, Sam  and
       Peng, Nanyun",
